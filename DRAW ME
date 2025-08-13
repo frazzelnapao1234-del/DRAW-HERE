@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Draw Here</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f9f9f9;
+    }
+    #drawArea {
+      border: 2px solid #ccc;
+      cursor: crosshair;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="drawArea" width="500" height="300"></canvas>
+
+  <script>
+    const canvas = document.getElementById('drawArea');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+
+    function startPosition(e) {
+      drawing = true;
+      draw(e);
+    }
+
+    function endPosition() {
+      drawing = false;
+      ctx.beginPath();
+    }
+
+    function draw(e) {
+      if (!drawing) return;
+
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = '#000';
+
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX  e.touches[0].clientX) - rect.left;
+      const y = (e.clientY  e.touches[0].clientY) - rect.top;
+
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+    }
+
+    canvas.addEventListener('mousedown', startPosition);
+    canvas.addEventListener('mouseup', endPosition);
+    canvas.addEventListener('mousemove', draw);
+
+    canvas.addEventListener('touchstart', startPosition);
+    canvas.addEventListener('touchend', endPosition);
+    canvas.addEventListener('touchmove', (e) => {
+      draw(e);
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>
